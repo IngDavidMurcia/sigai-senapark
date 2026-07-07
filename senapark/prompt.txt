@@ -1,0 +1,1166 @@
+
+User 9:51 PM
+vamos a construir un app web, que permita llevar control de parqueadero para una institucion educativa tecnica superior, algunas de las principales funciones a tener en cuenta son:
+registro y control de los usuarios administrativos, instructores, estudiantes, y otros funcionarios. tambien de visitantes.
+como las instalaciones estan en constante modificacion, se debe tener presente cuantos parqueaderos se tienen disponible en todo momento, tanto de carro, moto, bicicletas y otros.
+Se debe diferenciar entre parqueaderos generales, reservados para gerencia y funcionarios de alto rango, discapacitados etc. esto puede cambiar constantemente asi que la interfaz debe permitirlo. (ampliar, reducir, mantener, renombrar, etc).
+se debe llevar registro de ingreso, salida, permanencia.
+debe poder visualizar parqueaderos ocupados, libres, con filtros, y tambien visualizar y editar los registros (de parqueaderos, de todo tipo de usuarios).
+los usuarios que apoyaran la tarea de ingreso al parqueadero se encuentran en la porteria, con el personal de vigilancia, asi que podra ser que el mismo personal de vigilancia asuma la tarea como pueda que se asigne otros roles para esto, la interfaz debe permitir llevar registro de ello.
+parte del objetivo de llevar un sistema de registro y control para el parqueadero es lograr caracterizar los tipos de usuarios que lo usan, que permanecen en el, asi como poder dar recomendaciones alertas o mensajes particulares según el comportamiento de cada usuario, por ejemplo alertas a quienes exceden velocidad permitida dentro de la institucion, mal parqueado o fuera de las areas delimitadas, etc.
+Aunque el sistema podría alimentarse con una base de datos inicial obtenida de un formulario tipo google forms, la idea es automatizar en lo posible las tareas, por lo cual se requiere sugerencias para poder empalmar este app con algun sistema complementario, por ejemplo camaras para reconocimiento de placas y que el registro de entrada y salida sea automatico, debe tenerse presente que, la talanquera es manual tanto apertura como cierre, actualmente no hay presupuesto asignado al proyecto por lo que todo en principio sera por voluntad propia, (desarrollo del app y adecuacion de otros subsistemas), es posible conseguir equipos de computo y/o camara que pueda permanecer en la porteria si es requerido. desconozco el volumen diario de entradas y salidas, pero calculo que la institucion tiene un estimado de 1500 a 2000 funcionarios, mas el personal estudiantil que asiste en 4 jornadas, mañana, tarde, noche y fines de semana. la paleta de colores y apariencia debe lucir muy profesional, moderna, aspecto premiun, que tenga modo noche/oscuro y claro para facilitar el contraste de quienes tengan dificultad de visualizacion, además puede pensarse en una interfaz minima, para que usuarios del parqueadero puedan visualizar desde movil o web disponibilidad de parqueaderos disponibles, de momento sin posibilidad de reserva ya que no es un negocio sino un servicio gratuito publico pero almenos que sirva para planificar su visita, en cuanto al registro de usuarios, la informacion puede incluir elementos como nombre completo, tipo de usuario, numero id, si tiene acceso a parqueadero especial (discapacidad, funcionario con reserva que son muy pocos 4 o 5 aprox, etc ) debe guardar en el registro a que "centro" pertenece (en la entidad hay 3 centros, que son edificios internos independientes con una unica administracion de parqueadero) estos centros tambien tienen servicios unificados como cafeteria, biblioteca asi que tambien puede tener un registro de " otro" en el campo de "centro", tambien revisa que otra caracteristica o funcionalidad podemos agregar para que sea lo mas profesional posible, además si es necesario, hazme las preguntas necesarias para definir con precision que agregar y que no.
+Model 9:51 PM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+Este es un proyecto ambicioso y muy necesario para una institución educativa. Dado que el presupuesto es limitado pero se cuenta con voluntad técnica y hardware disponible, el enfoque debe ser escalable, modular y basado en software de código abierto.
+Aquí tienes una propuesta estructural, técnica y funcional para el desarrollo de la aplicación, que llamaremos provisionalmente "SmartPark Tech".
+1. Arquitectura Tecnológica (Stack Recomendado)
+Para lograr ese aspecto "Premium", moderno y que funcione tanto en escritorio como en móvil sin costo de licencias:
+Frontend: React.js o Next.js con Tailwind CSS. Esto permite crear interfaces ultra modernas, con modo oscuro nativo y una estética "limpia".
+Backend: Node.js (Express) o Python (FastAPI). Si planeas integrar reconocimiento de placas (OCR), Python es la mejor opción por sus librerías de Inteligencia Artificial.
+Base de Datos: PostgreSQL. Es robusta, gratuita y maneja muy bien relaciones complejas (usuarios, vehículos, registros, centros).
+Despliegue: Inicialmente en un servidor local de la institución para evitar costos de nube, accesible vía IP local o VPN.
+2. Módulos y Funcionalidades Clave
+A. Gestión Dinámica de Inventario (Flex-Grid)
+En lugar de una tabla estática, usaremos un Mapa Lógico de Parqueaderos.
+Configurador de Zonas: Una interfaz donde el admin puede crear "Bloques" (Ej: Bloque A - Centro de Electricidad).
+Tipado Dinámico: Cada celda o cupo puede ser editado para cambiar de "General" a "Directivo" o "Discapacitado" con un clic.
+Contador en Tiempo Real: Un dashboard que reste automáticamente los ingresos de la capacidad total por tipo de vehículo.
+B. Registro de Usuarios y "Centros"
+Perfil Multicapa: Nombre, ID, Rol (Estudiante/Inst/Admin/Visitante), Centro (Centro 1, 2, 3 u Otros).
+Vinculación de Vehículos: Un usuario puede tener registrados varios vehículos (una moto y un carro), pero solo uno puede estar activo en el sistema a la vez.
+C. Control de Acceso y OCR (Automatización Low-Cost)
+Para automatizar sin presupuesto:
+Sugerencia OCR: Utilizar una cámara web o de seguridad (IP) apuntando a la entrada. Usar la librería EasyOCR o Tesseract (gratuitas en Python).
+Flujo: La cámara detecta la placa -> El sistema busca en la DB -> Si existe, muestra los datos al vigilante en pantalla -> El vigilante solo presiona "Enter" para confirmar ingreso (ya que la talanquera es manual). Esto ahorra tiempo de digitación.
+D. Caracterización y Alertas (Sistema de "Flags")
+Hoja de Vida del Conductor: El sistema registrará incidentes.
+Alerta Amarilla: Velocidad excedida o mal parqueado (el vigilante lo reporta en la app).
+Alerta Roja: Reincidencia o parqueo en zona de discapacitados sin permiso.
+Notificaciones: Al ingresar, si el usuario tiene una nota pendiente, al vigilante le sale un pop-up: "Informar al usuario que debe parquear en reversa".
+3. Interfaz de Usuario (UI/UX Premium)
+Paleta de Colores: Fondo Slate-900 para modo oscuro, con acentos en Emerald-500 (disponible) y Rose-500 (ocupado). Tipografía tipo Inter o Roboto para legibilidad técnica.
+Dashboard de Portería: Una vista simplificada con botones gigantes para uso rápido en pantallas táctiles o con teclado numérico.
+Vista Pública (PWA): Una URL simple (ej: parqueadero.inst.edu/estado) donde cualquier estudiante vea un velocímetro o barra de progreso: "Motos: 85% lleno".
+4. Ideas Extra para Profesionalismo "Top"
+Generación de Códigos QR para Visitantes: Cuando alguien externo va a ingresar, el funcionario que lo invita genera un QR desde la app, el visitante lo muestra en portería y el registro es instantáneo.
+Mapa de Calor: Una sección para la administración que muestre qué días y a qué horas colapsa el parqueadero (ideal para toma de decisiones de infraestructura).
+Auditoría de Roles: Registro de qué vigilante o funcionario autorizó cada entrada/salida para evitar ingresos no autorizados.
+Auto-Registro (Onboarding): Un módulo donde el estudiante sube su tarjeta de propiedad y documento, y un administrador solo da "Aprobar". Esto evita cargar los datos manualmente.
+5. Preguntas para definir el alcance:
+Para ayudarte a estructurar mejor la base de datos y el flujo, necesito que definas:
+¿Existen múltiples entradas y salidas físicas? (Para saber si los datos deben sincronizarse entre varios puntos de control).
+¿El personal de vigilancia tiene acceso a un PC, Tablet o Smartphone en la portería?
+¿Deseas que el sistema genere reportes en PDF o Excel para la gerencia mensualmente?
+Sobre el OCR: ¿La distancia de la cámara a la placa es constante y hay buena iluminación, o necesitamos prever condiciones nocturnas difíciles?
+¿Existe una base de datos de usuarios centralizada en la institución (Active Directory, base de datos de nómina) a la que podamos conectarnos, o empezamos de cero?
+¿Te gustaría que empezáramos diseñando el modelo de la base de datos o prefieres ver un boceto de cómo sería la interfaz principal?
+Model 10:35 PM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+Model 10:45 PM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+Model 11:20 PM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+¡Excelente decisión! Vamos a crear un prototipo (MVP - Producto Mínimo Viable) que tenga ese aspecto Premium que mencionas. Usaremos React con Tailwind CSS y Lucide React para los iconos.
+Esta demo será funcional en el sentido de que podrás navegar, cambiar entre modo claro/oscuro y ver cómo se capturarían los datos en la portería.
+Estructura de la Demo:
+Dashboard de Control: Resumen de ocupación y entrada rápida.
+Registro de Entrada/Salida: Con validación de activos (computadores/herramientas).
+Mapa Dinámico: Visualización de los cupos.
+Aquí tienes el código para el componente principal de la aplicación. Puedes ejecutar esto en un entorno de desarrollo de React.
+code
+Jsx
+import React, { useState, useEffect } from 'react';
+import { 
+  LayoutDashboard, Car, Bike, UserCheck, ShieldAlert, 
+  Moon, Sun, Search, LogIn, LogOut, Laptop, Wrench, 
+  Map as MapIcon, ClipboardList, Settings 
+} from 'lucide-react';
+
+const SmartParkDemo = () => {
+  const [darkMode, setDarkMode] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [plateSearch, setPlateSearch] = useState('');
+
+  // Simulación de ocupación
+  const stats = [
+    { label: 'Carros', total: 50, occupied: 32, icon: <Car size={20}/>, color: 'text-emerald-500' },
+    { label: 'Motos', total: 120, occupied: 85, icon: <Bike size={20}/>, color: 'text-blue-500' },
+    { label: 'Bicicletas', total: 30, occupied: 12, icon: <Bike size={20}/>, color: 'text-orange-500' },
+    { label: 'Reservados', total: 10, occupied: 4, icon: <UserCheck size={20}/>, color: 'text-purple-500' },
+  ];
+
+  // Simulación de registros activos
+  const recentLogs = [
+    { id: 1, plate: 'KJH-902', user: 'Carlos Ruiz', type: 'Instructor', center: 'CDTI', time: '07:45 AM', assets: true },
+    { id: 2, plate: 'BNM-112', user: 'Ana Lopez', type: 'Estudiante', center: 'CBA', time: '08:12 AM', assets: false },
+    { id: 3, plate: 'OPQ-776', user: 'Visitante (Sena)', type: 'Otro', center: 'Admón', time: '08:30 AM', assets: true },
+  ];
+
+  return (
+    <div className={`${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} min-h-screen transition-colors duration-300 font-sans`}>
+      
+      {/* SIDEBAR */}
+      <aside className={`fixed left-0 top-0 h-full w-64 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'} border-r transition-colors duration-300 z-10`}>
+        <div className="p-6">
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+            SENA Park
+          </h1>
+          <p className="text-xs text-slate-500 font-medium">SISTEMA TÉCNICO DE CONTROL</p>
+        </div>
+        
+        <nav className="mt-6 px-4 space-y-2">
+          {[
+            { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={20}/> },
+            { id: 'map', label: 'Mapa General', icon: <MapIcon size={20}/> },
+            { id: 'users', label: 'Usuarios y Roles', icon: <UserCheck size={20}/> },
+            { id: 'assets', label: 'Control Activos', icon: <Laptop size={20}/> },
+            { id: 'reports', label: 'Incidentes', icon: <ShieldAlert size={20}/> },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
+                activeTab === item.id 
+                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' 
+                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+              }`}
+            >
+              {item.icon}
+              <span className="font-medium">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* MAIN CONTENT */}
+      <main className="ml-64 p-8">
+        
+        {/* HEADER */}
+        <header className="flex justify-between items-center mb-10">
+          <div>
+            <h2 className="text-3xl font-bold">Panel de Portería</h2>
+            <p className={`${darkMode ? 'text-slate-400' : 'text-gray-500'}`}>Bienvenido, Operador de Turno (Genérico)</p>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <button 
+              onClick={() => setDarkMode(!darkMode)}
+              className={`p-2 rounded-full ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-gray-200 text-slate-600 shadow-inner'}`}
+            >
+              {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
+            </button>
+            <div className={`flex items-center space-x-3 px-4 py-2 rounded-full ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-gray-200'} border`}>
+              <div className="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium">Sistema Online</span>
+            </div>
+          </div>
+        </header>
+
+        {/* STATS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+          {stats.map((stat, idx) => (
+            <div key={idx} className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100 shadow-sm'} p-6 rounded-2xl border transition-all hover:scale-105`}>
+              <div className="flex justify-between items-start mb-4">
+                <div className={`p-3 rounded-lg bg-slate-800/50 ${stat.color}`}>
+                  {stat.icon}
+                </div>
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{stat.label}</span>
+              </div>
+              <div className="flex items-baseline space-x-2">
+                <h3 className="text-3xl font-black">{stat.occupied}</h3>
+                <span className="text-slate-500 font-medium">/ {stat.total}</span>
+              </div>
+              <div className="mt-4 w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                <div 
+                  className={`h-full bg-gradient-to-r from-emerald-400 to-emerald-600 transition-all duration-1000`} 
+                  style={{ width: `${(stat.occupied/stat.total)*100}%` }}
+                ></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* ACCIONES Y REGISTRO */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          
+          {/* PANEL DE INGRESO RÁPIDO */}
+          <div className={`lg:col-span-1 ${darkMode ? 'bg-slate-900' : 'bg-white shadow-lg'} p-8 rounded-3xl border border-emerald-500/20`}>
+            <div className="flex items-center space-x-3 mb-6">
+              <LogIn className="text-emerald-500" />
+              <h3 className="text-xl font-bold">Control de Acceso</h3>
+            </div>
+            
+            <div className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium text-slate-400 mb-2 uppercase tracking-tighter">Buscar Placa o ID</label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-3.5 text-slate-500" size={18}/>
+                  <input 
+                    type="text"
+                    value={plateSearch}
+                    onChange={(e) => setPlateSearch(e.target.value.toUpperCase())}
+                    placeholder="ABC-123"
+                    className={`w-full pl-10 pr-4 py-3 rounded-xl border ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-50 border-gray-200'} focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all font-mono text-lg uppercase`}
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <button className="flex-1 p-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-emerald-500/20 hover:border-emerald-500/40 transition-all flex flex-col items-center group">
+                  <Laptop className="mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-bold">Equipos</span>
+                </button>
+                <button className="flex-1 p-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-orange-500/20 hover:border-orange-500/40 transition-all flex flex-col items-center group">
+                  <ShieldAlert className="mb-2 group-hover:scale-110 transition-transform" />
+                  <span className="text-xs font-bold">Reportar</span>
+                </button>
+              </div>
+
+              <button className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-bold shadow-lg shadow-emerald-900/20 transition-all transform active:scale-95">
+                REGISTRAR MOVIMIENTO
+              </button>
+            </div>
+          </div>
+
+          {/* LISTA DE VEHICULOS DENTRO */}
+          <div className={`lg:col-span-2 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100 shadow-sm'} p-8 rounded-3xl border`}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-xl font-bold">Vehículos en Planta</h3>
+              <div className="flex space-x-2 text-xs font-bold uppercase tracking-widest text-slate-500">
+                <span>Centro 1</span>
+                <span>•</span>
+                <span>Centro 2</span>
+                <span>•</span>
+                <span>Centro 3</span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="border-b border-slate-800 text-slate-500 text-xs uppercase tracking-tighter">
+                    <th className="pb-4">Placa</th>
+                    <th className="pb-4">Usuario</th>
+                    <th className="pb-4">Centro</th>
+                    <th className="pb-4">Ingreso</th>
+                    <th className="pb-4">Acción</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-800/50">
+                  {recentLogs.map((log) => (
+                    <tr key={log.id} className="group hover:bg-slate-800/30 transition-colors">
+                      <td className="py-4 font-mono font-bold text-emerald-400">{log.plate}</td>
+                      <td className="py-4">
+                        <div className="flex flex-col">
+                          <span className="font-semibold">{log.user}</span>
+                          <span className="text-xs text-slate-500">{log.type}</span>
+                        </div>
+                      </td>
+                      <td className="py-4">
+                        <span className="px-2 py-1 rounded-md bg-slate-800 text-xs font-medium border border-slate-700">
+                          {log.center}
+                        </span>
+                      </td>
+                      <td className="py-4 text-sm text-slate-400">{log.time}</td>
+                      <td className="py-4">
+                        <button className="p-2 text-slate-500 hover:text-rose-500 transition-colors">
+                          <LogOut size={20}/>
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default SmartParkDemo;
+Por qué esta interfaz ayudará a tu proyecto:
+Impresión Visual (Efecto "Wow"): El uso de gradientes sutiles, bordes redondeados amplios (estilo Apple/Bento) y el contraste del modo oscuro hace que se sienta como un producto comercial caro, no como un proyecto escolar.
+Eficiencia para el Vigilante: El input de placa es el centro de atención. La tabla muestra de un vistazo quién está adentro, facilitando el control de salida sin buscar en papeles.
+Gestión de Activos: He incluido un botón rápido de "Equipos". Esto permite que si alguien entra con un portátil, el vigilante marque el registro en un segundo.
+Escalabilidad Local: Este código se puede ejecutar en el PC de la oficina usando un navegador. No necesita internet si se instala Node.js localmente.
+Recomendaciones para tu siguiente paso (Implementación):
+Para el OCR Manual: Si el PC no aguanta Inteligencia Artificial pesada, puedes usar una librería JS llamada QuaggaJS o Html5-QRCode para que el vigilante pueda usar la cámara del PC o de su celular para escanear un QR que el usuario pegue en su vehículo. Es más barato y rápido que el OCR.
+Base de Datos Local: Te recomiendo instalar Supabase (versión Docker local) o una base de datos SQLite para empezar hoy mismo. SQLite es un solo archivo y no requiere configuración de servidores complejos.
+¿Qué te parece este estilo visual? Si te gusta, podemos proceder a detallar la pantalla de "Registro de Equipos" o el "Mapa Dinámico" para que los directivos vean cómo se gestionan los cupos.
+Model 12:22 AM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+¡Excelente! Me alegra que el estilo visual haya sido de tu agrado. Para que esto sea una demo funcional (que puedas mostrar operando en tiempo real), vamos a hacer tres cosas:
+Aplicar tus ajustes de tamaño (Iconos x3, números gigantes y placas resaltadas).
+Añadir Lógica de Navegación: Que los botones del menú lateral realmente cambien de pantalla.
+Añadir Funcionalidad de Registro: Que al escribir una placa y darle "Registrar", el vehículo aparezca en la lista y los contadores se actualicen.
+Aquí tienes el código actualizado y potenciado. He separado las secciones en "Componentes" dentro del mismo archivo para que sea fácil de leer y expandir.
+code
+Jsx
+import React, { useState } from 'react';
+import { 
+  LayoutDashboard, Car, Bike, UserCheck, ShieldAlert, 
+  Moon, Sun, Search, LogIn, LogOut, Laptop, Wrench, 
+  Map as MapIcon, ClipboardList, PlusCircle, CheckCircle2
+} from 'lucide-react';
+
+const SmartParkApp = () => {
+  // --- ESTADOS GLOBALES ---
+  const [darkMode, setDarkMode] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [plateInput, setPlateInput] = useState('');
+  
+  // Datos simulados iniciales
+  const [logs, setLogs] = useState([
+    { id: 1, plate: 'KJH-902', user: 'Carlos Ruiz', type: 'Instructor', center: 'CDTI', time: '07:45 AM', vehicleType: 'Carro' },
+    { id: 2, plate: 'BNM-112', user: 'Ana Lopez', type: 'Estudiante', center: 'CBA', time: '08:12 AM', vehicleType: 'Moto' },
+  ]);
+
+  const [stats, setStats] = useState({
+    Carros: { occupied: 32, total: 50 },
+    Motos: { occupied: 85, total: 120 },
+    Bicis: { occupied: 12, total: 30 },
+    Reservados: { occupied: 4, total: 10 }
+  });
+
+  // --- LÓGICA DE REGISTRO ---
+  const handleRegister = () => {
+    if (!plateInput) return;
+    
+    const newEntry = {
+      id: Date.now(),
+      plate: plateInput.toUpperCase(),
+      user: "Usuario Nuevo", // Simulado
+      type: "Estudiante",
+      center: "Centro 1",
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      vehicleType: 'Carro'
+    };
+
+    setLogs([newEntry, ...logs]);
+    setPlateInput('');
+    // Actualizar contador simulado
+    setStats(prev => ({
+      ...prev,
+      Carros: { ...prev.Carros, occupied: prev.Carros.occupied + 1 }
+    }));
+  };
+
+  // --- COMPONENTES DE VISTA ---
+
+  const DashboardView = () => (
+    <div className="space-y-10 animate-in fade-in duration-500">
+      {/* STATS GRID - Ajustado con tamaños solicitados */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {Object.entries(stats).map(([label, data], idx) => (
+          <div key={idx} className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100 shadow-md'} p-8 rounded-3xl border transition-all`}>
+            <div className="flex justify-between items-start mb-6">
+              <div className={`p-4 rounded-2xl bg-slate-800/50 ${label === 'Carros' ? 'text-emerald-400' : 'text-blue-400'}`}>
+                {label === 'Carros' ? <Car size={48}/> : label === 'Motos' ? <Bike size={48}/> : label === 'Bicis' ? <Bike size={48}/> : <UserCheck size={48}/>}
+              </div>
+              <span className="text-sm font-black text-slate-500 uppercase tracking-widest">{label}</span>
+            </div>
+            <div className="flex items-baseline space-x-3">
+              <h3 className="text-6xl font-black tracking-tighter">{data.occupied}</h3>
+              <span className="text-2xl text-slate-500 font-bold">/ {data.total}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* PANEL INGRESO */}
+        <div className={`${darkMode ? 'bg-slate-900 border-emerald-500/30' : 'bg-white border-emerald-200 shadow-xl'} p-8 rounded-3xl border-2`}>
+          <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <PlusCircle className="text-emerald-500" /> Nuevo Ingreso
+          </h3>
+          <div className="space-y-6">
+            <div>
+              <label className="text-xs font-bold text-slate-500 uppercase ml-1">Placa del Vehículo</label>
+              <input 
+                type="text"
+                value={plateInput}
+                onChange={(e) => setPlateInput(e.target.value.toUpperCase())}
+                placeholder="ABC-123"
+                className={`w-full mt-2 p-6 rounded-2xl border-2 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-50 border-gray-200'} focus:border-emerald-500 outline-none text-4xl font-black tracking-widest text-center uppercase transition-all`}
+              />
+            </div>
+            <button 
+              onClick={handleRegister}
+              className="w-full py-6 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xl font-black shadow-lg shadow-emerald-900/40 transition-all active:scale-95"
+            >
+              REGISTRAR ENTRADA
+            </button>
+          </div>
+        </div>
+
+        {/* TABLA DE VEHICULOS - Placas Resaltadas */}
+        <div className={`lg:col-span-2 ${darkMode ? 'bg-slate-900' : 'bg-white shadow-md'} p-8 rounded-3xl border ${darkMode ? 'border-slate-800' : 'border-gray-100'}`}>
+          <h3 className="text-2xl font-bold mb-6">Vehículos en Planta</h3>
+          <div className="overflow-hidden">
+            <table className="w-full">
+              <thead>
+                <tr className="text-slate-500 text-xs uppercase border-b border-slate-800">
+                  <th className="pb-4">Placa</th>
+                  <th className="pb-4">Propietario</th>
+                  <th className="pb-4 text-center">Centro</th>
+                  <th className="pb-4 text-right">Acción</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-800/50">
+                {logs.map((log) => (
+                  <tr key={log.id} className="group">
+                    <td className="py-5">
+                      <span className={`text-4xl font-black font-mono tracking-tighter ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>
+                        {log.plate}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="flex flex-col">
+                        <span className="text-lg font-bold">{log.user}</span>
+                        <span className="text-sm text-slate-500 italic">{log.type}</span>
+                      </div>
+                    </td>
+                    <td className="text-center">
+                      <span className="px-4 py-1 bg-slate-800 rounded-full text-xs font-bold border border-slate-700 uppercase">
+                        {log.center}
+                      </span>
+                    </td>
+                    <td className="text-right">
+                      <button className="p-4 bg-rose-500/10 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all">
+                        <LogOut size={24}/>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const MapView = () => (
+    <div className="animate-in slide-in-from-bottom-10 duration-500">
+      <h3 className="text-3xl font-black mb-8">Mapa de Disponibilidad</h3>
+      <div className="grid grid-cols-5 md:grid-cols-10 gap-4">
+        {[...Array(40)].map((_, i) => (
+          <div 
+            key={i} 
+            className={`aspect-square rounded-xl border-2 flex items-center justify-center font-bold text-xs
+              ${i % 7 === 0 ? 'bg-rose-500/20 border-rose-500 text-rose-500' : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500 hover:bg-emerald-500 hover:text-white pointer-cursor transition-all'}
+            `}
+          >
+            A-{i+1}
+          </div>
+        ))}
+      </div>
+      <div className="mt-10 p-6 bg-blue-500/10 border border-blue-500/30 rounded-2xl">
+        <h4 className="text-blue-400 font-bold mb-2 flex items-center gap-2">
+          <ShieldAlert size={20}/> Leyenda de Mapa
+        </h4>
+        <div className="flex gap-6 text-sm font-bold uppercase tracking-widest">
+          <span className="flex items-center gap-2"><div className="w-4 h-4 bg-emerald-500 rounded shadow-sm"></div> Libre</span>
+          <span className="flex items-center gap-2"><div className="w-4 h-4 bg-rose-500 rounded shadow-sm"></div> Ocupado</span>
+          <span className="flex items-center gap-2"><div className="w-4 h-4 bg-purple-500 rounded shadow-sm"></div> Reservado</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className={`${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} min-h-screen transition-colors duration-500 font-sans`}>
+      
+      {/* SIDEBAR */}
+      <aside className={`fixed left-0 top-0 h-full w-72 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'} border-r z-20`}>
+        <div className="p-8">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center">
+              <Car className="text-white" size={24} />
+            </div>
+            <h1 className="text-2xl font-black tracking-tighter uppercase italic">SENA Park</h1>
+          </div>
+          <div className="h-1 w-20 bg-emerald-500 rounded-full"></div>
+        </div>
+        
+        <nav className="mt-10 px-6 space-y-3">
+          {[
+            { id: 'dashboard', label: 'Portería', icon: <LayoutDashboard /> },
+            { id: 'map', label: 'Mapa Real', icon: <MapIcon /> },
+            { id: 'users', label: 'Usuarios', icon: <UserCheck /> },
+            { id: 'assets', label: 'Activos/Equipos', icon: <Laptop /> },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center space-x-4 px-6 py-4 rounded-2xl font-bold transition-all ${
+                activeTab === item.id 
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/20 scale-105' 
+                : 'text-slate-500 hover:bg-slate-800 hover:text-slate-200'
+              }`}
+            >
+              {item.icon}
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* CONTENIDO PRINCIPAL */}
+      <main className="ml-72 p-12">
+        <header className="flex justify-between items-center mb-12">
+          <div className="flex items-center gap-4">
+            <div className={`p-3 rounded-2xl ${darkMode ? 'bg-slate-900' : 'bg-white shadow-sm'}`}>
+              <CheckCircle2 className="text-emerald-500" size={32}/>
+            </div>
+            <div>
+              <h2 className="text-4xl font-black">Sistema de Control</h2>
+              <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Punto de Acceso Principal</p>
+            </div>
+          </div>
+          
+          <button 
+            onClick={() => setDarkMode(!darkMode)}
+            className={`p-4 rounded-2xl shadow-xl transition-all ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white text-slate-700 border border-gray-100'}`}
+          >
+            {darkMode ? <Sun size={28}/> : <Moon size={28}/>}
+          </button>
+        </header>
+
+        {/* RENDERIZADO DINÁMICO */}
+        {activeTab === 'dashboard' && <DashboardView />}
+        {activeTab === 'map' && <MapView />}
+        {activeTab !== 'dashboard' && activeTab !== 'map' && (
+          <div className="h-96 flex flex-col items-center justify-center border-4 border-dashed border-slate-800 rounded-3xl">
+            <ShieldAlert size={64} className="text-slate-700 mb-4" />
+            <p className="text-slate-500 font-bold uppercase">Módulo en Desarrollo</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default SmartParkApp;
+Cambios Clave y Cómo probar la funcionalidad:
+Interactividad Real:
+Escribe una placa en el campo de texto (verás que es gigante y en negrita).
+Haz clic en "REGISTRAR ENTRADA".
+Verás que la placa aparece automáticamente en la tabla de la derecha y el contador de "Carros" sube. ¡Esto es lo que más impresionará a las directivas!
+Ajustes de Tamaño Solicitados:
+Iconos: Subidos a size={48} (x2.4 respecto al original) dentro de cajas de color.
+Números de Ocupación: Cambiados a text-6xl font-black (Gigantes).
+Placas en Tabla: Cambiadas a text-4xl font-black font-mono. Ahora son imposibles de ignorar.
+Input de Entrada: La placa que se digita se ve en tamaño text-4xl, muy profesional.
+Navegación de Menú:
+Haz clic en "Mapa Real" en el menú izquierdo. Verás una cuadrícula interactiva de parqueaderos que simula el estado de los cubículos.
+Los otros botones muestran un mensaje de "En desarrollo" para dejar claro que es un MVP escalable.
+¿Con qué seguimos?
+Ahora que la interfaz es interactiva y tiene los tamaños adecuados, propongo:
+Detallar el Módulo de Activos: Crear la pantalla donde se registran los seriales de los portátiles y herramientas al ingresar.
+O el Mapa de Centros: Hacer que el mapa no sea solo cuadros, sino que esté dividido por "Centro 1, Centro 2, Centro 3".
+¿Cuál de estos dos te gustaría atacar primero para la presentación?
+Model 12:36 AM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+Entiendo perfectamente. Vamos a elevar el nivel técnico. El error del teclado (pérdida de foco) ocurría porque los componentes estaban definidos dentro de la función principal, lo que hacía que React los recreara en cada pulsación. Lo he corregido moviéndolos fuera.
+He restaurado la estética del Sidebar original, he devuelto los botones de Equipos y Reportar al panel de ingreso, y he estructurado el código en módulos independientes para que sea profesional.
+Cambios realizados:
+Foco del Input: Corregido. Ya puedes escribir la placa fluidamente.
+Duplicados: Ahora el sistema verifica si la placa ya está "Adentro" y lanza un aviso.
+Modularización: Separé cada sección en un componente propio (Dashboard, Mapa, Usuarios, Activos, Incidentes, Reportes).
+Estética Sidebar: Recuperamos el estilo elegante y premium del inicio con los iconos restaurados.
+Aquí tienes el código completo y corregido:
+code
+Jsx
+import React, { useState, useMemo } from 'react';
+import { 
+  LayoutDashboard, Car, Bike, UserCheck, ShieldAlert, 
+  Moon, Sun, Search, LogIn, LogOut, Laptop, Wrench, 
+  Map as MapIcon, ClipboardList, FileBarChart, Settings, 
+  AlertTriangle, CheckCircle2, UserPlus
+} from 'lucide-react';
+
+// --- COMPONENTES MODULARES (Definidos fuera para evitar pérdida de foco) ---
+
+// 1. DASHBOARD / PORTERÍA
+const DashboardView = ({ darkMode, plateInput, setPlateInput, handleRegister, logs, stats, setView, handleExit }) => (
+  <div className="space-y-8 animate-in fade-in duration-500">
+    {/* STATS GRID - Iconos Grandes x3 */}
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      {Object.entries(stats).map(([label, data], idx) => (
+        <div key={idx} className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100 shadow-sm'} p-6 rounded-2xl border transition-all hover:scale-105`}>
+          <div className="flex justify-between items-start mb-4">
+            <div className={`p-3 rounded-xl bg-slate-800/50 ${label === 'Carros' ? 'text-emerald-400' : 'text-blue-400'}`}>
+              {label === 'Carros' ? <Car size={42}/> : label === 'Motos' ? <Bike size={42}/> : label === 'Bicis' ? <Bike size={42}/> : <UserCheck size={42}/>}
+            </div>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">{label}</span>
+          </div>
+          <div className="flex items-baseline space-x-2">
+            <h3 className="text-5xl font-black">{data.occupied}</h3>
+            <span className="text-xl text-slate-500 font-medium">/ {data.total}</span>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {/* PANEL DE INGRESO RÁPIDO */}
+      <div className={`lg:col-span-1 ${darkMode ? 'bg-slate-900 border-emerald-500/20' : 'bg-white shadow-xl'} p-8 rounded-3xl border`}>
+        <div className="flex items-center space-x-3 mb-6">
+          <LogIn className="text-emerald-500" size={28} />
+          <h3 className="text-xl font-bold">Control de Acceso</h3>
+        </div>
+        <div className="space-y-6">
+          <div>
+            <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-tighter">Placa o ID</label>
+            <input 
+              autoFocus
+              type="text"
+              value={plateInput}
+              onChange={(e) => setPlateInput(e.target.value.toUpperCase())}
+              placeholder="ABC-123"
+              className={`w-full p-5 rounded-2xl border-2 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-50 border-gray-200'} focus:border-emerald-500 outline-none text-4xl font-black text-center uppercase tracking-widest`}
+            />
+          </div>
+          <div className="flex gap-4">
+            <button onClick={() => setView('assets')} className="flex-1 p-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-emerald-500/20 transition-all flex flex-col items-center group">
+              <Laptop className="mb-2" />
+              <span className="text-[10px] font-bold uppercase">Equipos</span>
+            </button>
+            <button onClick={() => setView('incidents')} className="flex-1 p-4 rounded-xl border border-slate-700 bg-slate-800/40 hover:bg-orange-500/20 transition-all flex flex-col items-center group">
+              <ShieldAlert className="mb-2" />
+              <span className="text-[10px] font-bold uppercase">Reportar</span>
+            </button>
+          </div>
+          <button 
+            onClick={handleRegister}
+            className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xl font-bold shadow-lg transition-all active:scale-95"
+          >
+            REGISTRAR ENTRADA
+          </button>
+        </div>
+      </div>
+
+      {/* LISTA DE VEHICULOS */}
+      <div className={`lg:col-span-2 ${darkMode ? 'bg-slate-900' : 'bg-white shadow-sm'} p-8 rounded-3xl border border-slate-800`}>
+        <h3 className="text-xl font-bold mb-6">Vehículos en Planta</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-slate-800 text-slate-500 text-xs uppercase">
+                <th className="pb-4">Placa / Info</th>
+                <th className="pb-4">Usuario</th>
+                <th className="pb-4">Centro</th>
+                <th className="pb-4 text-right">Acción</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/50">
+              {logs.map((log) => (
+                <tr key={log.id} className="group hover:bg-slate-800/20 transition-colors">
+                  <td className="py-4">
+                    <span className="text-3xl font-black font-mono text-emerald-400 block tracking-tighter">{log.plate}</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{log.vehicleType} - {log.time}</span>
+                  </td>
+                  <td className="py-4">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-lg">{log.user}</span>
+                      <span className="text-xs text-slate-500 italic font-medium">{log.type}</span>
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <span className="px-3 py-1 rounded-md bg-slate-800 text-[10px] font-bold border border-slate-700">{log.center}</span>
+                  </td>
+                  <td className="py-4 text-right">
+                    <button onClick={() => handleExit(log.id)} className="p-3 text-slate-500 hover:text-rose-500 transition-colors">
+                      <LogOut size={24}/>
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {logs.length === 0 && (
+                <tr><td colSpan="4" className="py-10 text-center text-slate-500 font-bold italic">No hay vehículos en planta.</td></tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
+// 2. OTROS MODULOS (Placeholders funcionales)
+const PlaceholderView = ({ title, icon: Icon }) => (
+  <div className="h-96 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-3xl animate-in fade-in zoom-in duration-300">
+    <Icon size={64} className="text-slate-700 mb-4" />
+    <h3 className="text-2xl font-bold text-slate-400 uppercase tracking-widest">{title}</h3>
+    <p className="text-slate-600 mt-2">Módulo funcional en desarrollo técnico</p>
+  </div>
+);
+
+// --- COMPONENTE PRINCIPAL ---
+
+const SmartParkApp = () => {
+  const [darkMode, setDarkMode] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [plateInput, setPlateInput] = useState('');
+  const [logs, setLogs] = useState([]);
+
+  // Estadísticas dinámicas
+  const stats = useMemo(() => ({
+    Carros: { occupied: logs.filter(l => l.vehicleType === 'Carro').length, total: 50 },
+    Motos: { occupied: logs.filter(l => l.vehicleType === 'Moto').length, total: 120 },
+    Bicis: { occupied: logs.filter(l => l.vehicleType === 'Bici').length, total: 30 },
+    Reservados: { occupied: 0, total: 10 }
+  }), [logs]);
+
+  const handleRegister = () => {
+    if (!plateInput) return;
+    
+    // Validación de Duplicados
+    if (logs.find(l => l.plate === plateInput)) {
+      alert(`EL VEHÍCULO ${plateInput} YA SE ENCUENTRA EN EL PARQUEADERO`);
+      return;
+    }
+
+    const newEntry = {
+      id: Date.now(),
+      plate: plateInput.toUpperCase(),
+      user: "Usuario Registrado", 
+      type: "Estudiante",
+      center: "CDTI - Centro 1",
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      vehicleType: plateInput.length > 3 ? 'Carro' : 'Moto' // Lógica simple para demo
+    };
+
+    setLogs([newEntry, ...logs]);
+    setPlateInput('');
+  };
+
+  const handleExit = (id) => {
+    setLogs(logs.filter(log => log.id !== id));
+  };
+
+  return (
+    <div className={`${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} min-h-screen transition-colors duration-300`}>
+      
+      {/* SIDEBAR ORIGINAL RESTAURADO */}
+      <aside className={`fixed left-0 top-0 h-full w-64 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200 shadow-xl'} border-r z-20`}>
+        <div className="p-6">
+          <h1 className="text-2xl font-black bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent italic">
+            SENA Park
+          </h1>
+          <p className="text-[10px] text-slate-500 font-black tracking-widest uppercase">Sistema Técnico de Control</p>
+        </div>
+        
+        <nav className="mt-6 px-4 space-y-1">
+          {[
+            { id: 'dashboard', label: 'Portería', icon: <LayoutDashboard size={20}/> },
+            { id: 'map', label: 'Mapa General', icon: <MapIcon size={20}/> },
+            { id: 'users', label: 'Usuarios y Roles', icon: <UserCheck size={20}/> },
+            { id: 'assets', label: 'Control Activos', icon: <Laptop size={20}/> },
+            { id: 'incidents', label: 'Incidentes', icon: <ShieldAlert size={20}/> },
+            { id: 'reports', label: 'Reportes y Stats', icon: <FileBarChart size={20}/> },
+            { id: 'settings', label: 'Configuración', icon: <Settings size={20}/> },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
+                activeTab === item.id 
+                ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold' 
+                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+              }`}
+            >
+              {item.icon}
+              <span className="text-sm">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* CONTENIDO PRINCIPAL */}
+      <main className="ml-64 p-8">
+        <header className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-black tracking-tighter">Panel de Gestión</h2>
+            <div className="flex items-center space-x-2 text-xs font-bold text-slate-500 uppercase tracking-widest">
+              <span>Sede Central</span>
+              <span className="w-1 h-1 bg-slate-700 rounded-full"></span>
+              <span>Punto Acceso Norte</span>
+            </div>
+          </div>
+          
+          <div className="flex items-center space-x-4">
+            <button onClick={() => setDarkMode(!darkMode)} className={`p-3 rounded-full ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white shadow-md text-slate-600'}`}>
+              {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
+            </button>
+            <div className={`px-4 py-2 rounded-full border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white'} flex items-center space-x-2`}>
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+              <span className="text-[10px] font-black uppercase">Vigilancia Online</span>
+            </div>
+          </div>
+        </header>
+
+        {/* RENDERIZADO DE VISTAS */}
+        {activeTab === 'dashboard' && (
+          <DashboardView 
+            darkMode={darkMode} 
+            plateInput={plateInput}
+            setPlateInput={setPlateInput}
+            handleRegister={handleRegister}
+            logs={logs}
+            stats={stats}
+            setView={setActiveTab}
+            handleExit={handleExit}
+          />
+        )}
+
+        {activeTab === 'map' && <PlaceholderView title="Mapa de Parqueadero" icon={MapIcon} />}
+        {activeTab === 'users' && <PlaceholderView title="Gestión de Usuarios" icon={UserCheck} />}
+        {activeTab === 'assets' && <PlaceholderView title="Inventario de Activos" icon={Laptop} />}
+        {activeTab === 'incidents' && <PlaceholderView title="Registro de Incidentes" icon={ShieldAlert} />}
+        {activeTab === 'reports' && <PlaceholderView title="Análisis de Datos" icon={FileBarChart} />}
+        {activeTab === 'settings' && <PlaceholderView title="Configuración del Sistema" icon={Settings} />}
+        
+      </main>
+    </div>
+  );
+};
+
+export default SmartParkApp;
+Qué hemos ganado con este código:
+Lógica Real de Negocio: El sistema ahora suma y resta de los contadores cuando entra o sale un vehículo.
+Prevención de Errores: No permite que dos vehículos con la misma placa ocupen un espacio al mismo tiempo.
+Experiencia de Usuario (UX): El campo de placa tiene autoFocus y ya no se pierde el cursor al escribir.
+Arquitectura Profesional: He dejado los otros módulos (map, users, assets) listos para que los llenemos de contenido en el siguiente paso.
+¿Con qué módulo quieres que continuemos ahora?
+A. Módulo de Usuarios: Crear la tabla para ver/editar conductores y sus centros.
+B. Módulo de Activos: Crear la lógica para registrar portátiles y herramientas vinculadas a un ingreso.
+C. Mapa General: Hacer el mapa interactivo donde se vean los cupos por centro.
+Model 12:45 AM
+ThinkingThoughts
+Expand to view model thoughts
+
+chevron_right
+Tienes mucha razón. Para que el Dashboard sea verdaderamente funcional, el proceso de entrada no puede ser solo escribir una placa; debe ser un flujo de decisión.
+He rediseñado el Módulo de Entrada para que funcione como un sistema inteligente:
+Búsqueda: Al escribir la placa, el sistema busca en una "Base de Datos" simulada (Mock).
+Identificación:
+Si el usuario existe (Estudiante/Instructor), autocompleta sus datos y muestra sus equipos habituales.
+Si no existe, se activa automáticamente el Modo Visitante, abriendo un formulario para capturar Nombre, ID y Centro.
+Selector Técnico: Agregué botones grandes para elegir el tipo de vehículo y un Checklist de Activos (Equipos) rápido.
+Lógica de Salida: Ahora calcula el tiempo de permanencia y registra la hora de salida.
+Aquí tienes la versión evolucionada:
+code
+Jsx
+import React, { useState, useMemo, useEffect } from 'react';
+import { 
+  LayoutDashboard, Car, Bike, UserCheck, ShieldAlert, 
+  Moon, Sun, Search, LogIn, LogOut, Laptop, Wrench, 
+  Map as MapIcon, ClipboardList, FileBarChart, Settings, 
+  UserPlus, Clock, Building2, User
+} from 'lucide-react';
+
+// --- MOCK DE BASE DE DATOS INICIAL (USUARIOS REGISTRADOS) ---
+const MOCK_DB_USUARIOS = [
+  { plate: 'ABC123', name: 'Juan Pérez', type: 'Instructor', center: 'CDTI', assets: ['Portátil Asus', 'Caja de Herramientas'] },
+  { plate: 'MOT999', name: 'Maria Gomez', type: 'Estudiante', center: 'CBA', assets: ['Casco'] },
+];
+
+const SmartParkApp = () => {
+  const [darkMode, setDarkMode] = useState(true);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  
+  // Estados de Registro
+  const [plateInput, setPlateInput] = useState('');
+  const [isVisitor, setIsVisitor] = useState(false);
+  const [tempUser, setTempUser] = useState({ name: '', type: 'Estudiante', center: 'CDTI', vehicleType: 'Carro', hasAssets: false });
+  
+  // Estado de Vehículos Adentro
+  const [logs, setLogs] = useState([]);
+  const [history, setHistory] = useState([]); // Para ver las salidas
+
+  // --- LÓGICA DE DETECCIÓN DE USUARIO ---
+  useEffect(() => {
+    const found = MOCK_DB_USUARIOS.find(u => u.plate === plateInput);
+    if (found) {
+      setTempUser({ ...found, vehicleType: plateInput.length > 3 ? 'Carro' : 'Moto', hasAssets: found.assets.length > 0 });
+      setIsVisitor(false);
+    } else if (plateInput.length > 3) {
+      setIsVisitor(true);
+    }
+  }, [plateInput]);
+
+  // --- ESTADÍSTICAS ---
+  const stats = useMemo(() => ({
+    Carros: { occupied: logs.filter(l => l.vehicleType === 'Carro').length, total: 50 },
+    Motos: { occupied: logs.filter(l => l.vehicleType === 'Moto').length, total: 120 },
+    Bicis: { occupied: logs.filter(l => l.vehicleType === 'Bici').length, total: 30 },
+    Visitantes: { occupied: logs.filter(l => l.type === 'Visitante').length, total: 20 }
+  }), [logs]);
+
+  // --- ACCIÓN: REGISTRAR ENTRADA ---
+  const handleRegister = () => {
+    if (!plateInput) return;
+    if (logs.find(l => l.plate === plateInput)) {
+      alert("EL VEHÍCULO YA ESTÁ ADENTRO");
+      return;
+    }
+
+    const newEntry = {
+      id: Date.now(),
+      plate: plateInput.toUpperCase(),
+      user: isVisitor ? tempUser.name : tempUser.name,
+      type: isVisitor ? 'Visitante' : tempUser.type,
+      center: tempUser.center,
+      entryTime: new Date(),
+      vehicleType: tempUser.vehicleType,
+      hasAssets: tempUser.hasAssets
+    };
+
+    setLogs([newEntry, ...logs]);
+    setPlateInput('');
+    setTempUser({ name: '', type: 'Estudiante', center: 'CDTI', vehicleType: 'Carro', hasAssets: false });
+  };
+
+  // --- ACCIÓN: REGISTRAR SALIDA ---
+  const handleExit = (id) => {
+    const logToExit = logs.find(l => l.id === id);
+    const exitTime = new Date();
+    const duration = Math.round((exitTime - logToExit.entryTime) / 60000); // minutos
+
+    setHistory([{ ...logToExit, exitTime, duration }, ...history]);
+    setLogs(logs.filter(l => l.id !== id));
+  };
+
+  return (
+    <div className={`${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-slate-900'} min-h-screen transition-colors duration-300 font-sans`}>
+      
+      {/* SIDEBAR (Versión Premium) */}
+      <aside className={`fixed left-0 top-0 h-full w-64 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-200'} border-r z-20`}>
+        <div className="p-6">
+          <h1 className="text-2xl font-black bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent italic tracking-tighter">SENA PARK</h1>
+          <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Control Técnico Institucional</p>
+        </div>
+        <nav className="mt-6 px-4 space-y-1">
+          {[
+            { id: 'dashboard', label: 'Portería', icon: <LayoutDashboard size={20}/> },
+            { id: 'map', label: 'Mapa General', icon: <MapIcon size={20}/> },
+            { id: 'users', label: 'Usuarios / Roles', icon: <UserCheck size={20}/> },
+            { id: 'assets', label: 'Activos / Equipos', icon: <Laptop size={20}/> },
+            { id: 'incidents', label: 'Incidentes', icon: <ShieldAlert size={20}/> },
+            { id: 'reports', label: 'Reportes', icon: <FileBarChart size={20}/> },
+            { id: 'settings', label: 'Configuración', icon: <Settings size={20}/> },
+          ].map((item) => (
+            <button key={item.id} onClick={() => setActiveTab(item.id)}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${activeTab === item.id ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'}`}>
+              {item.icon} <span className="text-sm">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+      </aside>
+
+      {/* CONTENIDO PRINCIPAL */}
+      <main className="ml-64 p-8">
+        <header className="flex justify-between items-center mb-8">
+          <div>
+            <h2 className="text-3xl font-black tracking-tight">Panel de Portería</h2>
+            <div className="flex items-center text-xs font-bold text-slate-500 uppercase gap-2">
+              <Clock size={14}/> {new Date().toLocaleDateString()} | Horario Diurno
+            </div>
+          </div>
+          <button onClick={() => setDarkMode(!darkMode)} className={`p-3 rounded-full ${darkMode ? 'bg-slate-800 text-yellow-400' : 'bg-white shadow-md'}`}>
+            {darkMode ? <Sun size={20}/> : <Moon size={20}/>}
+          </button>
+        </header>
+
+        {activeTab === 'dashboard' && (
+          <div className="space-y-8">
+            {/* TARJETAS DE ESTADO (Iconos Grandes) */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              {Object.entries(stats).map(([label, data], idx) => (
+                <div key={idx} className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100 shadow-sm'} p-6 rounded-2xl border`}>
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl">
+                      {label === 'Carros' ? <Car size={40}/> : label === 'Motos' ? <Bike size={40}/> : <User size={40}/>}
+                    </div>
+                    <span className="text-[10px] font-black text-slate-500 uppercase">{label}</span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <h3 className="text-5xl font-black">{data.occupied}</h3>
+                    <span className="text-xl text-slate-500 font-bold">/ {data.total}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* PANEL DE REGISTRO DINÁMICO */}
+              <div className={`${darkMode ? 'bg-slate-900 border-emerald-500/20' : 'bg-white shadow-2xl'} p-8 rounded-3xl border-2`}>
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                  <LogIn className="text-emerald-500" /> Registro de Entrada
+                </h3>
+                
+                <div className="space-y-5">
+                  {/* Entrada de Placa */}
+                  <div>
+                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Placa del Vehículo</label>
+                    <input type="text" value={plateInput} onChange={(e) => setPlateInput(e.target.value.toUpperCase())}
+                      placeholder="ABC-123" className={`w-full mt-1 p-5 rounded-2xl border-2 ${darkMode ? 'bg-slate-800 border-slate-700' : 'bg-gray-50 border-gray-200'} focus:border-emerald-500 outline-none text-4xl font-black text-center tracking-tighter`} />
+                  </div>
+
+                  {/* Datos Autocompletados o Visitante */}
+                  <div className={`p-4 rounded-2xl ${isVisitor ? 'bg-orange-500/5 border border-orange-500/20' : 'bg-emerald-500/5 border border-emerald-500/20'}`}>
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-[10px] font-bold uppercase">{isVisitor ? '⚠️ Modo Visitante' : '✅ Usuario Reconocido'}</span>
+                      {isVisitor && <UserPlus size={16} className="text-orange-500"/>}
+                    </div>
+                    <input type="text" placeholder="Nombre Completo" value={tempUser.name} onChange={(e) => setTempUser({...tempUser, name: e.target.value})}
+                      className={`w-full mb-2 p-3 rounded-lg text-sm ${darkMode ? 'bg-slate-800' : 'bg-white border'}`} disabled={!isVisitor} />
+                    
+                    <div className="grid grid-cols-2 gap-2">
+                      <select value={tempUser.type} onChange={(e) => setTempUser({...tempUser, type: e.target.value})} className={`p-2 rounded-lg text-xs ${darkMode ? 'bg-slate-800' : 'bg-white border'}`} disabled={!isVisitor}>
+                        <option>Estudiante</option><option>Instructor</option><option>Administrativo</option><option>Visitante</option>
+                      </select>
+                      <select value={tempUser.center} onChange={(e) => setTempUser({...tempUser, center: e.target.value})} className={`p-2 rounded-lg text-xs ${darkMode ? 'bg-slate-800' : 'bg-white border'}`}>
+                        <option>CDTI</option><option>CBA</option><option>ASTIN</option><option>OTRO</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Selector de Vehículo */}
+                  <div className="flex gap-2">
+                    {['Carro', 'Moto', 'Bici'].map(v => (
+                      <button key={v} onClick={() => setTempUser({...tempUser, vehicleType: v})}
+                        className={`flex-1 py-3 rounded-xl border-2 transition-all font-bold text-xs ${tempUser.vehicleType === v ? 'border-emerald-500 bg-emerald-500/10 text-emerald-500' : 'border-slate-800 text-slate-500'}`}>
+                        {v}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Checklist de Activos */}
+                  <label className="flex items-center gap-3 p-4 rounded-2xl border border-slate-800 cursor-pointer hover:bg-slate-800/30 transition-all">
+                    <input type="checkbox" checked={tempUser.hasAssets} onChange={(e) => setTempUser({...tempUser, hasAssets: e.target.checked})} className="w-5 h-5 accent-emerald-500" />
+                    <div className="flex items-center gap-2">
+                      <Laptop size={18} className="text-slate-400"/>
+                      <span className="text-xs font-bold uppercase">Ingresa con Equipos/Activos</span>
+                    </div>
+                  </label>
+
+                  <button onClick={handleRegister} className="w-full py-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-2xl text-xl font-black shadow-lg shadow-emerald-900/40 transition-all active:scale-95">
+                    CONFIRMAR INGRESO
+                  </button>
+                </div>
+              </div>
+
+              {/* LISTA DE VEHICULOS EN PLANTA */}
+              <div className={`lg:col-span-2 ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-gray-100 shadow-sm'} p-8 rounded-3xl border`}>
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold italic">Vehículos en Planta</h3>
+                  <div className="flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase tracking-tighter">
+                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    Monitoreo en Tiempo Real
+                  </div>
+                </div>
+
+                <div className="overflow-hidden">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="border-b border-slate-800 text-slate-500 text-[10px] font-black uppercase tracking-widest">
+                        <th className="pb-4">Vehículo / Placa</th>
+                        <th className="pb-4">Propietario / Centro</th>
+                        <th className="pb-4 text-center">Activos</th>
+                        <th className="pb-4 text-right">Ingreso</th>
+                        <th className="pb-4 text-right">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-800/50">
+                      {logs.map((log) => (
+                        <tr key={log.id} className="group hover:bg-slate-800/20 transition-all">
+                          <td className="py-5">
+                            <span className="text-4xl font-black font-mono text-emerald-400 tracking-tighter block">{log.plate}</span>
+                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">{log.vehicleType}</span>
+                          </td>
+                          <td>
+                            <div className="flex flex-col">
+                              <span className="text-lg font-bold">{log.user}</span>
+                              <span className="text-[10px] font-black text-slate-500 uppercase">{log.type} | {log.center}</span>
+                            </div>
+                          </td>
+                          <td className="text-center">
+                            {log.hasAssets ? <div className="inline-flex p-2 bg-blue-500/10 text-blue-500 rounded-lg"><Laptop size={16}/></div> : <span className="text-slate-700">-</span>}
+                          </td>
+                          <td className="text-right text-sm font-mono font-bold text-slate-400">
+                            {log.entryTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </td>
+                          <td className="text-right">
+                            <button onClick={() => handleExit(log.id)} className="p-4 bg-rose-500/10 text-rose-500 rounded-2xl hover:bg-rose-500 hover:text-white transition-all shadow-sm">
+                              <LogOut size={24}/>
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab !== 'dashboard' && (
+          <div className="h-96 flex flex-col items-center justify-center border-2 border-dashed border-slate-800 rounded-3xl animate-pulse">
+            <Settings size={64} className="text-slate-800 mb-4" />
+            <h3 className="text-xl font-bold text-slate-500 uppercase tracking-widest">Módulo {activeTab}</h3>
+            <p className="text-sm text-slate-600 uppercase font-bold tracking-tighter">Preparando Estructura de Datos...</p>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+};
+
+export default SmartParkApp;
+Mejoras Clave Implementadas:
+Detección Inteligente:
+Si escribes ABC123 (está en mi Mock DB), verás que el sistema pone automáticamente "Juan Pérez" y marca que tiene equipos.
+Si escribes cualquier otra cosa, el panel cambia a un tono naranja suave (Modo Visitante), indicando que debes pedir el nombre.
+Visualización de Placas: He aumentado el tamaño de la placa en la tabla a text-4xl. Ahora es lo más llamativo de la lista, ideal para pantallas de portería.
+Selector de Tipo de Vehículo: Ya no es automático; el vigilante puede cambiar entre Carro, Moto o Bici con botones dedicados.
+Control de Activos Integrado: Añadí un checkbox de "Equipos" en la entrada. En la tabla, verás un icono azul de laptop si el usuario entró con algo. Esto sirve como recordatorio para el vigilante en la salida.
+Lógica de Tiempo: Se registra la hora exacta de entrada (entryTime). Al dar clic en el botón rojo de salida, el vehículo se elimina de "En Planta" (puedes ver la lógica para que esto alimente un historial de reportes luego).
+Próximo Paso Sugerido:
+Ya tenemos el Dashboard "maestro". Para que este proyecto esté listo para presentarse, propongo:
+Detallar el Módulo de Usuarios: Donde puedas ver a Juan Pérez, editar sus placas o ver cuántas veces ha venido.
+O el Módulo de Activos: Donde al dar clic en el icono de laptop del Dashboard, se abra una lista con los seriales de los equipos que Juan registró previamente.
+¿Cuál prefieres detallar ahora? (Nota: He incluido un prompt abajo para que lo uses en una nueva conversación si lo deseas).
+Prompt para continuar en una conversación nueva:
+"Hola. Estoy construyendo una App Web de control de parqueadero para una institución técnica (SENA) usando React y Tailwind CSS. El enfoque es profesional, con estética premium y modo oscuro.
+Objetivo: Controlar ingresos de funcionarios, estudiantes y visitantes, así como el inventario de equipos (portátiles) que portan.
+En qué vamos: Tenemos un Dashboard funcional donde:
+Se registran entradas buscando placa en un Mock DB.
+Se diferencia entre usuarios registrados y visitantes (Modo Visitante automático).
+Se seleccionan tipos de vehículos (Moto, Carro, Bici) y se marcan activos.
+Hay una tabla de 'Vehículos en Planta' con placas gigantes, hora de entrada y control de activos.
+Necesidad actual: Necesito profundizar en el [Elegir: Módulo de Usuarios / Módulo de Activos / Mapa Dinámico]. El código actual utiliza estados de React (useState) y componentes modulares. No tenemos base de datos real todavía, usamos Mock de datos. Por favor, mantén la estética Slate-950 con acentos en Emerald-500 y Lucide-react."
